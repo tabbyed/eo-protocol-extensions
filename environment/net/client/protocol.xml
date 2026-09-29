@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol>
+    <packet family="Request" action="Accept">
+        <comment>
+            Takes a request from the request board the player has open. They hold
+            it until they finish it or their time runs out, and until then only
+            they and their party can hand it in, for the gold it paid when they
+            took it. The server answers with Request_List.
+        </comment>
+        <field name="request_id" type="int"/>
+    </packet>
+
+    <packet family="Request" action="Remove">
+        <comment>
+            Gives up a request the player holds, putting it back on the board.
+            The server answers with Request_List if the player has the request
+            board open.
+        </comment>
+        <field name="request_id" type="int"/>
+    </packet>
+</protocol>

@@ -13,6 +13,12 @@ library ecosystem.
 |------|-------------|
 | [`deep`](deep/) | The "Deep" protocol extensions created by Vult-r. Adds and extends packets for features of the 0.3.x client version |
 
+## Forest Rift extensions
+
+| Name | Description |
+|------|-------------|
+| [`environment`](environment/) | The server's time of day, the weather, and the request board, where players take on NPCs' requests. Made for Forest Rift's reoserv server and eoweb web client |
+
 ---
 
 ## What are protocol extensions?

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol>
+    <enum name="WeatherType" type="char">
+        <comment>The weather over the world.</comment>
+        <value name="Clear">0</value>
+        <value name="Rain">1</value>
+    </enum>
+
+    <enum name="RequestKind" type="char">
+        <comment>What an NPC's request on the request board asks for.</comment>
+        <value name="Shortage">
+            <comment>Something a shop sold out of, to put back on its shelf</comment>
+            0
+        </value>
+        <value name="TradeRun">
+            <comment>Goods only one far-off shop sells</comment>
+            1
+        </value>
+        <value name="Hunt">
+            <comment>What a monster drops</comment>
+            2
+        </value>
+        <value name="Cull">
+            <comment>What a monster nobody has hunted lately drops, for more</comment>
+            3
+        </value>
+        <value name="Crafting">
+            <comment>Something only a shop's crafting makes</comment>
+            4
+        </value>
+        <value name="Rain">
+            <comment>What rain brings out, open while it rains</comment>
+            5
+        </value>
+        <value name="Night">
+            <comment>What night brings out, open until dawn</comment>
+            6
+        </value>
+    </enum>
+
+    <enum name="RequestTier" type="char">
+        <comment>How hard a request is.</comment>
+        <value name="Easy">0</value>
+        <value name="Medium">1</value>
+        <value name="Hard">2</value>
+    </enum>
+
+    <enum name="RequestHold" type="char">
+        <comment>Who holds a request, as the player it's sent to sees it.</comment>
+        <value name="Open">
+            <comment>Nobody: anyone can take it, or hand in to it</comment>
+            0
+        </value>
+        <value name="Mine">
+            <comment>The player holds it</comment>
+            1
+        </value>
+        <value name="Party">
+            <comment>Someone in the player's party holds it, so the player can hand in to it too</comment>
+            2
+        </value>
+        <value name="Taken">
+            <comment>Someone else holds it: another player, or one of the world's residents</comment>
+            3
+        </value>
+    </enum>
+
+    <struct name="RequestEntry">
+        <comment>
+            A request on the request board, with what a client needs to show it:
+            who asked, what for, what it pays, and who holds it.
+        </comment>
+        <chunked>
+            <field name="request_id" type="int"/>
+            <field name="npc_id" type="short">
+                <comment>The NPC who asked</comment>
+            </field>
+            <field name="kind" type="RequestKind"/>
+            <field name="tier" type="RequestTier"/>
+            <field name="item_id" type="short"/>
+            <field name="amount" type="short"/>
+            <field name="delivered" type="short"/>
+            <field name="gold" type="int">
+                <comment>
+                    The gold the whole request pays: now, or for a held request,
+                    what it paid when it was taken
+                </comment>
+            </field>
+            <field name="rising" type="bool">
+                <comment>Whether that gold is still rising while nobody takes it</comment>
+            </field>
+            <field name="experience" type="int"/>
+            <field name="gift_item_id" type="short">
+                <comment>What the NPC gives whoever finishes it; 0 for nothing</comment>
+            </field>
+            <field name="gift_amount" type="short"/>
+            <field name="standing" type="bool">
+                <comment>Whether finishing it earns standing with the NPC's town</comment>
+            </field>
+            <field name="shop" type="bool">
+                <comment>
+                    Whether it's handed in by selling to the NPC's shop, rather
+                    than in a dialog with the NPC
+                </comment>
+            </field>
+            <field name="monster_id" type="short">
+                <comment>The monster that drops what's wanted; 0 for none</comment>
+            </field>
+            <field name="minutes_left" type="short">
+                <comment>Minutes until it closes; 0 for a Rain or Night request</comment>
+            </field>
+            <field name="hold" type="RequestHold"/>
+            <field name="hold_minutes_left" type="short">
+                <comment>Minutes until whoever holds it runs out of time; 0 for an open request</comment>
+            </field>
+            <field name="far" type="bool">
+                <comment>
+                    Whether it comes from another board's region, so there's
+                    further to go to hand it in
+                </comment>
+            </field>
+            <break/>
+            <field name="town" type="string">
+                <comment>The NPC's town</comment>
+            </field>
+            <break/>
+            <field name="note" type="string">
+                <comment>What the NPC says about it</comment>
+            </field>
+            <break/>
+            <field name="whereabouts" type="string">
+                <comment>Where to get what's wanted</comment>
+            </field>
+        </chunked>
+    </struct>
+
+    <packet family="Clock" action="Reply">
+        <comment>
+            The server's time of day, for a day-night cycle: seconds since
+            midnight on the server's clock. Sent on entering the game.
+        </comment>
+        <field name="seconds" type="three"/>
+    </packet>
+
+    <packet family="Weather" action="Agree">
+        <comment>
+            The weather over the world. Sent on entering the game, and to every
+            player in the game whenever it changes.
+        </comment>
+        <field name="weather" type="WeatherType"/>
+    </packet>
+
+    <packet family="Request" action="List">
+        <comment>
+            The requests a request board lists for the player: those they hold
+            first, then those from the board's region, easiest first, then a few
+            far ones. Sent on opening the board, just before Board_Open, which
+            lists the same requests as posts for clients without the extension,
+            and again when the player takes or gives up a request there.
+
+            holders gives the name of whoever holds each request, in the same
+            order, or an empty string for an open one. It and the fields after
+            it come after the requests, so a client that stops reading there
+            still works.
+        </comment>
+        <chunked>
+            <field name="board_id" type="char"/>
+            <length name="requests_count" type="char"/>
+            <array name="requests" type="RequestEntry" length="requests_count" delimited="true"/>
+            <array name="holders" type="string" length="requests_count" delimited="true"/>
+            <field name="max_held" type="char">
+                <comment>How many requests a player may hold at once</comment>
+            </field>
+            <field name="wait_minutes" type="short">
+                <comment>
+                    Minutes until the player may take a request again, after
+                    giving one up or running out of time; 0 if they may now
+                </comment>
+            </field>
+        </chunked>
+    </packet>
+</protocol>

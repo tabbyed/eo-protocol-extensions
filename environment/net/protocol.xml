@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol>
+    <enum name="PacketFamily" extend="append">
+        <value name="Request">246</value>
+        <value name="Weather">247</value>
+        <value name="Clock">248</value>
+    </enum>
+</protocol>
