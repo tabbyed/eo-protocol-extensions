@@ -153,10 +153,12 @@
     <packet family="Request" action="List">
         <comment>
             The requests a request board lists for the player: those they hold
-            first, then those from the board's region, easiest first, then a few
-            far ones. Sent on opening the board, just before Board_Open, which
-            lists the same requests as posts for clients without the extension,
-            and again when the player takes or gives up a request there.
+            first, then those nobody holds from the board's region, easiest
+            first, then a few far ones, then every request anyone else holds,
+            wherever it's from. Sent on opening the board, just before
+            Board_Open, which lists the same requests as posts for clients
+            without the extension, and again when the player takes or gives up
+            a request there.
 
             holders gives the name of whoever holds each request, in the same
             order, or an empty string for an open one. It and the fields after

@@ -51,7 +51,8 @@ and never sees them.
 
 Each map with the request board lists the requests from its region: the maps
 nearer that board than any other. It lists a few requests from further away
-too, marked `far`, and every request the player holds.
+too, marked `far`, every request the player holds, and every request anyone
+else holds, wherever it's from, so players can see what others are seeing to.
 
 A player who takes a request holds it until they finish it or their time runs
 out. Until then, only they and their party can hand it in. It pays the gold it
