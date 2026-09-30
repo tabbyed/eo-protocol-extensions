@@ -29,6 +29,7 @@ jobs:
           <extensions>
             <extension type="file" name="deep" path="deep" />
             <extension type="file" name="environment" path="environment" />
+            <extension type="file" name="actors" path="actors" />
           </extensions>
           EOF
 

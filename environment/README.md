@@ -59,7 +59,9 @@ out. Until then, only they and their party can hand it in. It pays the gold it
 paid when they took it, instead of rising further. A player can hold only
 `max_held` requests at once. After giving one up or running out of time, they
 wait `wait_minutes` before taking another. Requests nobody takes for long may be
-taken by the world's residents, NPCs who live in its towns.
+taken by the world's residents, NPCs who live in its towns. A resident who
+takes a Hunt or Cull goes out to where the monster lives, hunts it there, and
+comes back by the time the request is due.
 
 The server decides how long a hold lasts and how long the wait is. In reoserv
 they're settings; by default a hold lasts 1, 2 or 4 hours by tier, plus an hour

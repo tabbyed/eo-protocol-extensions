@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol>
+    <packet family="Actor" action="Remove">
+        <comment>
+            An NPC leaves the map by a warp, on its way to another. The client
+            takes it off the map as it goes, rather than as a death: no health
+            bar, no sound, no drop. It has just stepped onto the warp, so the
+            client can let that step finish first. Sent to the players in range
+            of the warp.
+        </comment>
+        <field name="npc_index" type="char"/>
+    </packet>
+
+    <packet family="Actor" action="Reply">
+        <comment>
+            An NPC strikes another NPC: a resident one of the monsters it
+            hunts, or a monster a resident that struck it. The attacker turns
+            to face its target and swings, and the target takes the damage,
+            shown on its health bar. Sent to the players in range of the
+            target.
+        </comment>
+        <field name="npc_index" type="char">
+            <comment>The NPC striking</comment>
+        </field>
+        <field name="direction" type="Direction">
+            <comment>The way it faces to strike</comment>
+        </field>
+        <field name="target_index" type="char">
+            <comment>The NPC struck</comment>
+        </field>
+        <field name="damage" type="three"/>
+        <field name="hp_percentage" type="char">
+            <comment>What is left of the target's HP, as a percentage</comment>
+        </field>
+        <field name="killed" type="bool">
+            <comment>
+                Whether the strike killed the target: the client takes it off
+                the map as a death. Nothing drops, and no player gains
+                experience. A resident struck down this way is carried home,
+                and appears there again
+            </comment>
+        </field>
+    </packet>
+
+    <packet family="Actor" action="Use">
+        <comment>
+            An NPC uses an item on itself, as a hurt resident drinks a potion
+            while it hunts. It heals, and the client shows the heal on its
+            health bar. Sent to the players in range of the NPC.
+        </comment>
+        <field name="npc_index" type="char"/>
+        <field name="item_id" type="short">
+            <comment>The item it used</comment>
+        </field>
+        <field name="heal" type="three">
+            <comment>The HP it gained</comment>
+        </field>
+        <field name="hp_percentage" type="char">
+            <comment>Its HP after, as a percentage</comment>
+        </field>
+    </packet>
+</protocol>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol>
+    <enum name="PacketFamily" extend="append">
+        <value name="Actor">245</value>
+    </enum>
+</protocol>

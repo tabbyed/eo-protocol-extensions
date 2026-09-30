@@ -18,6 +18,7 @@ library ecosystem.
 | Name | Description |
 |------|-------------|
 | [`environment`](environment/) | The server's time of day, the weather, and the request board, where players take on NPCs' requests. Made for Forest Rift's reoserv server and eoweb web client |
+| [`actors`](actors/) | NPCs the server directs: residents who travel between maps, and later cutscenes. Made for Forest Rift's reoserv server and eoweb web client |
 
 ---
 
