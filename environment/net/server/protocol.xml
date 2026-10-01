@@ -6,6 +6,25 @@
         <value name="Rain">1</value>
     </enum>
 
+    <enum name="MarkKind" type="char">
+        <comment>What an NPC has for the player, shown over its head.</comment>
+        <value name="Quest">
+            <comment>A quest the player can take</comment>
+            1
+        </value>
+    </enum>
+
+    <struct name="MarkEntry">
+        <comment>An NPC with something for the player.</comment>
+        <field name="behavior_id" type="short">
+            <comment>
+                The NPC's behavior id, as its ENF record has it: for a quest NPC,
+                the id EQF's AddNpcText and AddNpcInput name it by
+            </comment>
+        </field>
+        <field name="kind" type="MarkKind"/>
+    </struct>
+
     <enum name="RequestKind" type="char">
         <comment>What an NPC's request on the request board asks for.</comment>
         <value name="Shortage">
@@ -140,6 +159,20 @@
             midnight on the server's clock. Sent on entering the game.
         </comment>
         <field name="seconds" type="three"/>
+    </packet>
+
+    <packet family="Mark" action="List">
+        <comment>
+            Every NPC with something for the player, wherever it is: for now,
+            the quest NPCs with a quest they can take, one that's at its first
+            state (never started, or reset) and not held back for the day by
+            DoneDaily. A client marks each NPC of that kind whose ENF record
+            has that behavior id. Sent on entering the game, and again
+            whenever it changes: after quest progress moves on, or on
+            arriving on a map once a daily quest has come round again.
+        </comment>
+        <length name="marks_count" type="char"/>
+        <array name="marks" type="MarkEntry" length="marks_count"/>
     </packet>
 
     <packet family="Weather" action="Agree">

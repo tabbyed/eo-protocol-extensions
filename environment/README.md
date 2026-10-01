@@ -1,8 +1,9 @@
 # Environment Extension
 
 Packets for a player's surroundings beyond the 0.0.28 protocol: the server's
-time of day, for a day-night cycle; the weather; and the request board, where
-NPCs post what they need and players take requests on. Made for Forest Rift's
+time of day, for a day-night cycle; the weather; the request board, where
+NPCs post what they need and players take requests on; and marks over the
+NPCs with something for the player, such as a quest to take. Made for Forest Rift's
 reoserv server and eoweb web client. reoserv sends these packets only to web
 clients, which connect over WebSocket. The classic client connects over TCP
 and never sees them.
@@ -16,12 +17,14 @@ and never sees them.
 | `PacketFamily::Request` | 246 |
 | `PacketFamily::Weather` | 247 |
 | `PacketFamily::Clock` | 248 |
+| `PacketFamily::Mark` | 243 |
 
 ### New enums
 
 | Enum | Description |
 |---|---|
 | `WeatherType` | The weather over the world: `Clear` or `Rain` |
+| `MarkKind` | What an NPC has for the player: `Quest`, a quest they can take |
 | `RequestKind` | What a request asks for: a shortage, a trade run, a hunt, a cull, crafting, or what rain or night brings out |
 | `RequestTier` | How hard a request is: `Easy`, `Medium` or `Hard` |
 | `RequestHold` | Who holds a request, as the player sees it: nobody, the player, their party, or someone else |
@@ -31,6 +34,7 @@ and never sees them.
 | Struct | Description |
 |---|---|
 | `RequestEntry` | A request on the board: who asked, what for, how many so far, what it pays, how long it has left, and who holds it |
+| `MarkEntry` | An NPC with something for the player, by its behavior id, and what it has |
 
 ### New server packets
 
@@ -38,6 +42,7 @@ and never sees them.
 |---|---|
 | `ClockReply` | Seconds since midnight on the server's clock, sent on entering the game |
 | `WeatherAgree` | The weather, sent on entering the game and to every player whenever it changes |
+| `MarkList` | Every quest NPC with a quest the player can take, by behavior id. Sent on entering the game and whenever it changes |
 | `RequestList` | The requests a request board lists for the player, with who holds each. Sent on opening the board, just before `BoardOpen`, which lists the same requests as posts for clients without the extension, and when the player takes or gives up a request there |
 
 ### New client packets

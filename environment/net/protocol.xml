@@ -4,5 +4,6 @@
         <value name="Request">246</value>
         <value name="Weather">247</value>
         <value name="Clock">248</value>
+        <value name="Mark">243</value>
     </enum>
 </protocol>
