@@ -28,3 +28,6 @@ htmlcov/
 .vscode/
 *.swp
 .DS_Store
+
+# Videos the studio exports beside a scene
+*.mp4

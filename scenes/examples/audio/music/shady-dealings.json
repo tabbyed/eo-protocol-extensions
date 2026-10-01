@@ -1,0 +1,5 @@
+{
+  "loop": [5.460, 27.785],
+  "crossfade": 0.2,
+  "note": "The first time through plays from the start; after that it goes round three of the song's phrases (7.4415 s each), from just before the downbeat at 5.465 s to just before the one at 27.790 s, blending the two over 0.2 s. Those two points sound most alike of any in the song; the big last section (31.6-35.3 s) can't loop cleanly, so it's left out."
+}

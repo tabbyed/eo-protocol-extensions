@@ -19,6 +19,7 @@ library ecosystem.
 |------|-------------|
 | [`environment`](environment/) | The server's time of day, the weather, and the request board, where players take on NPCs' requests. Made for Forest Rift's reoserv server and eoweb web client |
 | [`actors`](actors/) | NPCs the server directs: residents who travel between maps, and later cutscenes. Made for Forest Rift's reoserv server and eoweb web client |
+| [`scenes`](scenes/) | Cutscenes and the stories that string them together: the file format (schema, examples, a checker) and the `Scene` packets (244) that play them. [RUNTIME.md](scenes/RUNTIME.md) says how servers and clients run them. Made for Forest Rift's reoserv server and eoweb web client |
 
 ---
 

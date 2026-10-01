@@ -1,0 +1,361 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tabbyed/eo-protocol-extensions/master/scenes/scene.schema.json",
+  "format": 1,
+  "id": "blobs-plot",
+  "title": "The blobs' plot",
+  "kind": "personal",
+  "map": 19,
+  "timeOfDay": "22:00",
+  "cast": {
+    "you": { "role": "player", "at": [35, 12], "facing": "up" },
+    "mr-blob-a": { "role": "extra", "label": "Mr Blob A", "npc": 3, "at": [36, 8], "facing": "left" },
+    "mr-blob-b": { "role": "extra", "label": "Mr Blob B", "npc": 3, "at": [38, 9], "facing": "left" },
+    "yeti": { "role": "npc", "spawn": 5, "at": [12, 11], "facing": "down" },
+    "ingrid": { "role": "npc", "spawn": 14, "at": [39, 9], "facing": "down" }
+  },
+  "source": {
+    "markers": {},
+    "tracks": ["screen", "camera", "dialogue", "sound", "mr-blob-a", "mr-blob-b", "you", "yeti", "ingrid"],
+    "clips": [
+      { "id": "lock", "track": "screen", "type": "lock", "start": { "at": 0 } },
+      {
+        "id": "letterbox-on",
+        "track": "screen",
+        "type": "screen",
+        "letterbox": true,
+        "start": { "with": "lock" }
+      },
+      {
+        "id": "a-strolls",
+        "track": "mr-blob-a",
+        "type": "walk",
+        "actor": "mr-blob-a",
+        "to": { "tile": [30, 8] },
+        "stepMs": 1300,
+        "start": { "with": "lock" }
+      },
+      {
+        "id": "b-strolls",
+        "track": "mr-blob-b",
+        "type": "walk",
+        "actor": "mr-blob-b",
+        "to": { "tile": [32, 9] },
+        "stepMs": 1300,
+        "start": { "with": "a-strolls" }
+      },
+      {
+        "id": "cut-to-them",
+        "track": "camera",
+        "type": "camera",
+        "follow": "mr-blob-a",
+        "ms": 500,
+        "start": { "with": "b-strolls", "offset": 800 }
+      },
+      {
+        "id": "a-grins",
+        "track": "mr-blob-a",
+        "type": "emote",
+        "actor": "mr-blob-a",
+        "emote": "happy",
+        "start": { "with": "cut-to-them", "offset": 400 }
+      },
+      {
+        "id": "a-plots",
+        "track": "dialogue",
+        "type": "say",
+        "actor": "mr-blob-a",
+        "text": "I think it's time we take over snow village.",
+        "show": "balloon",
+        "wait": "time",
+        "start": { "with": "a-grins" }
+      },
+      {
+        "id": "b-frets",
+        "track": "mr-blob-b",
+        "type": "emote",
+        "actor": "mr-blob-b",
+        "emote": "confused",
+        "start": { "after": "a-plots", "offset": 600 }
+      },
+      {
+        "id": "b-doubts",
+        "track": "dialogue",
+        "type": "say",
+        "actor": "mr-blob-b",
+        "text": "Idk... there's that yeti and Ingrid. They're really strong.",
+        "show": "balloon",
+        "wait": "time",
+        "start": { "with": "b-frets" },
+        "ms": 3500
+      },
+      {
+        "id": "cut-to-yeti",
+        "track": "camera",
+        "type": "camera",
+        "follow": "yeti",
+        "ms": 700,
+        "start": { "with": "b-doubts", "offset": 3600 }
+      },
+      {
+        "id": "yeti-rears",
+        "track": "yeti",
+        "type": "pose",
+        "actor": "yeti",
+        "pose": "attack",
+        "loop": false,
+        "start": { "after": "cut-to-yeti", "offset": 300 }
+      },
+      {
+        "id": "yeti-glares",
+        "track": "yeti",
+        "type": "emote",
+        "actor": "yeti",
+        "emote": "angry",
+        "start": { "with": "yeti-rears" }
+      },
+      {
+        "id": "roar",
+        "track": "sound",
+        "type": "sound",
+        "sfx": "yeti-roar",
+        "actor": "yeti",
+        "start": { "with": "yeti-rears", "offset": 150 }
+      },
+      {
+        "id": "yeti-roars",
+        "track": "dialogue",
+        "type": "say",
+        "actor": "yeti",
+        "text": "RRRAAAWWR!",
+        "show": "balloon",
+        "wait": "time",
+        "start": { "with": "yeti-rears", "offset": 300 },
+        "ms": 1900
+      },
+      {
+        "id": "ground-shakes",
+        "track": "screen",
+        "type": "quake",
+        "strength": 3,
+        "start": { "with": "yeti-roars" }
+      },
+      {
+        "id": "cut-to-ingrid",
+        "track": "camera",
+        "type": "camera",
+        "follow": "ingrid",
+        "ms": 500,
+        "start": { "after": "yeti-roars", "offset": 200 }
+      },
+      {
+        "id": "ingrid-melts",
+        "track": "ingrid",
+        "type": "emote",
+        "actor": "ingrid",
+        "emote": "hearts",
+        "start": { "after": "cut-to-ingrid" }
+      },
+      {
+        "id": "ingrid-coos",
+        "track": "dialogue",
+        "type": "say",
+        "actor": "ingrid",
+        "text": "Aww, look at those little blobs! So squishy!",
+        "show": "balloon",
+        "wait": "time",
+        "start": { "with": "ingrid-melts", "offset": 900 }
+      },
+      {
+        "id": "back-to-blobs",
+        "track": "camera",
+        "type": "camera",
+        "follow": "mr-blob-a",
+        "ms": 500,
+        "start": { "after": "ingrid-coos" }
+      },
+      {
+        "id": "b-blushes",
+        "track": "mr-blob-b",
+        "type": "emote",
+        "actor": "mr-blob-b",
+        "emote": "embarrassed",
+        "start": { "after": "back-to-blobs" }
+      },
+      {
+        "id": "b-admits",
+        "track": "dialogue",
+        "type": "say",
+        "actor": "mr-blob-b",
+        "text": "Ugh... I kinda like Ingrid.",
+        "show": "balloon",
+        "wait": "time",
+        "start": { "with": "b-blushes" }
+      },
+      {
+        "id": "b-pleads",
+        "track": "dialogue",
+        "type": "say",
+        "actor": "mr-blob-b",
+        "text": "If we ever DO take over Frosthollow... we keep Ingrid alive. Okay?",
+        "show": "balloon",
+        "wait": "time",
+        "start": { "after": "b-admits", "offset": 300 }
+      },
+      {
+        "id": "a-grins-again",
+        "track": "mr-blob-a",
+        "type": "emote",
+        "actor": "mr-blob-a",
+        "emote": "happy",
+        "start": { "after": "b-pleads", "offset": 300 }
+      },
+      {
+        "id": "a-agrees",
+        "track": "dialogue",
+        "type": "say",
+        "actor": "mr-blob-a",
+        "text": "...Fine. Deal.",
+        "show": "balloon",
+        "wait": "time",
+        "start": { "with": "a-grins-again" }
+      },
+      {
+        "id": "camera-home",
+        "track": "camera",
+        "type": "camera",
+        "home": true,
+        "ms": 800,
+        "start": { "after": "a-agrees" }
+      },
+      {
+        "id": "letterbox-off",
+        "track": "screen",
+        "type": "screen",
+        "letterbox": false,
+        "start": { "after": "camera-home" }
+      },
+      { "id": "unlock", "track": "screen", "type": "unlock", "start": { "with": "letterbox-off" } }
+    ]
+  },
+  "compiled": {
+    "by": "eo-scene-studio 0.1.0",
+    "uses": ["lock", "screen", "walk", "wait", "camera", "emote", "say", "pose", "sound", "quake", "unlock"],
+    "cues": [
+      { "id": 0, "do": "lock" },
+      { "id": 1, "do": "screen", "letterbox": true },
+      {
+        "id": 2,
+        "do": "walk",
+        "actor": "mr-blob-a",
+        "from": [36, 8],
+        "path": [[35, 8], [34, 8], [33, 8], [32, 8], [31, 8], [30, 8]],
+        "stepMs": 1300
+      },
+      {
+        "id": 3,
+        "do": "walk",
+        "actor": "mr-blob-b",
+        "from": [38, 9],
+        "path": [[37, 9], [36, 9], [35, 9], [34, 9], [33, 9], [32, 9]],
+        "stepMs": 1300
+      },
+      { "id": 4, "do": "wait", "ms": 800 },
+      { "id": 5, "do": "camera", "follow": "mr-blob-a", "ms": 500, "after": [4] },
+      { "id": 6, "do": "wait", "ms": 400, "after": [4] },
+      { "id": 7, "do": "emote", "actor": "mr-blob-a", "emote": "happy", "after": [6] },
+      {
+        "id": 8,
+        "do": "say",
+        "actor": "mr-blob-a",
+        "text": "I think it's time we take over snow village.",
+        "show": "balloon",
+        "wait": "time",
+        "ms": 3600,
+        "after": [6]
+      },
+      { "id": 9, "do": "wait", "ms": 600, "after": [8] },
+      { "id": 10, "do": "emote", "actor": "mr-blob-b", "emote": "confused", "after": [9] },
+      {
+        "id": 11,
+        "do": "say",
+        "actor": "mr-blob-b",
+        "text": "Idk... there's that yeti and Ingrid. They're really strong.",
+        "show": "balloon",
+        "wait": "time",
+        "ms": 3500,
+        "after": [9]
+      },
+      { "id": 12, "do": "wait", "ms": 3600, "after": [9] },
+      { "id": 13, "do": "camera", "follow": "yeti", "ms": 700, "after": [12] },
+      { "id": 14, "do": "wait", "ms": 300, "after": [13] },
+      { "id": 15, "do": "pose", "actor": "yeti", "pose": "attack", "loop": false, "after": [14] },
+      { "id": 16, "do": "emote", "actor": "yeti", "emote": "angry", "after": [14] },
+      { "id": 17, "do": "wait", "ms": 150, "after": [14] },
+      { "id": 18, "do": "sound", "sfx": "yeti-roar", "actor": "yeti", "after": [17] },
+      { "id": 19, "do": "wait", "ms": 300, "after": [14] },
+      {
+        "id": 20,
+        "do": "say",
+        "actor": "yeti",
+        "text": "RRRAAAWWR!",
+        "show": "balloon",
+        "wait": "time",
+        "ms": 1900,
+        "after": [19]
+      },
+      { "id": 21, "do": "quake", "strength": 3, "after": [19] },
+      { "id": 22, "do": "wait", "ms": 200, "after": [20] },
+      { "id": 23, "do": "camera", "follow": "ingrid", "ms": 500, "after": [22] },
+      { "id": 24, "do": "emote", "actor": "ingrid", "emote": "hearts", "after": [23] },
+      { "id": 25, "do": "wait", "ms": 900, "after": [23] },
+      {
+        "id": 26,
+        "do": "say",
+        "actor": "ingrid",
+        "text": "Aww, look at those little blobs! So squishy!",
+        "show": "balloon",
+        "wait": "time",
+        "ms": 3600,
+        "after": [25]
+      },
+      { "id": 27, "do": "camera", "follow": "mr-blob-a", "ms": 500, "after": [26] },
+      { "id": 28, "do": "emote", "actor": "mr-blob-b", "emote": "embarrassed", "after": [27] },
+      {
+        "id": 29,
+        "do": "say",
+        "actor": "mr-blob-b",
+        "text": "Ugh... I kinda like Ingrid.",
+        "show": "balloon",
+        "wait": "time",
+        "ms": 2600,
+        "after": [27]
+      },
+      { "id": 30, "do": "wait", "ms": 300, "after": [29] },
+      {
+        "id": 31,
+        "do": "say",
+        "actor": "mr-blob-b",
+        "text": "If we ever DO take over Frosthollow... we keep Ingrid alive. Okay?",
+        "show": "balloon",
+        "wait": "time",
+        "ms": 4800,
+        "after": [30]
+      },
+      { "id": 32, "do": "wait", "ms": 300, "after": [31] },
+      { "id": 33, "do": "emote", "actor": "mr-blob-a", "emote": "happy", "after": [32] },
+      {
+        "id": 34,
+        "do": "say",
+        "actor": "mr-blob-a",
+        "text": "...Fine. Deal.",
+        "show": "balloon",
+        "wait": "time",
+        "ms": 1900,
+        "after": [32]
+      },
+      { "id": 35, "do": "camera", "home": true, "ms": 800, "after": [34] },
+      { "id": 36, "do": "screen", "letterbox": false, "after": [35] },
+      { "id": 37, "do": "unlock", "after": [35] }
+    ]
+  }
+}

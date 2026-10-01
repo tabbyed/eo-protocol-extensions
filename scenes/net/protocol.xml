@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol>
+    <enum name="PacketFamily" extend="append">
+        <value name="Scene">244</value>
+    </enum>
+</protocol>

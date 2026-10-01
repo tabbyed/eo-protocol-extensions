@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol>
+    <packet family="Scene" action="Accept">
+        <comment>
+            The player picked an option of a choice in the scene they're
+            watching. The server records the option's branch for the stories
+            that wait on it.
+        </comment>
+        <field name="choice_cue" type="short"/>
+        <field name="option" type="char"/>
+    </packet>
+
+    <packet family="Scene" action="Use">
+        <comment>
+            A map cue of the scene is due: the server takes the player to its
+            map and tile. Only a map cue of the scene playing, once.
+        </comment>
+        <field name="cue" type="short"/>
+    </packet>
+
+    <packet family="Scene" action="Close">
+        <comment>
+            The scene has ended, or the player skipped it. The server counts
+            it as seen, lifts its lock, and plays whatever waits on it.
+        </comment>
+        <dummy type="byte">0</dummy>
+    </packet>
+</protocol>

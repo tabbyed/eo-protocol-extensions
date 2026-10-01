@@ -1,0 +1,864 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tabbyed/eo-protocol-extensions/master/scenes/scene.schema.json",
+  "format": 1,
+  "id": "blobs-recruit",
+  "title": "The blobs come recruiting",
+  "summary": "The player talks to Ingrid outside the inn at dusk. Once she goes inside, the two blobs who were plotting last night sidle up and ask the player to help them take Frosthollow. Mr Blob B makes them promise Ingrid comes to no harm. The player joins them, refuses, or threatens to tell Ingrid.",
+  "kind": "personal",
+  "map": 19,
+  "timeOfDay": "18:30",
+  "footsteps": "snow",
+  "duck": 0.45,
+  "cast": {
+    "you": { "role": "player", "at": [39, 10], "facing": "up" },
+    "ingrid": { "role": "npc", "spawn": 14, "at": [39, 9], "facing": "down" },
+    "mr-blob-a": {
+      "role": "extra",
+      "label": "Mr Blob A",
+      "npc": 3,
+      "at": [30, 8],
+      "facing": "right",
+      "stepVolume": 0.4
+    },
+    "mr-blob-b": {
+      "role": "extra",
+      "label": "Mr Blob B",
+      "npc": 3,
+      "at": [32, 9],
+      "facing": "right",
+      "stepVolume": 0.4
+    }
+  },
+  "source": {
+    "markers": {},
+    "tracks": ["screen", "camera", "dialogue", "you", "ingrid", "mr-blob-a", "mr-blob-b", "music", "sound"],
+    "clips": [
+      { "id": "lock", "type": "lock", "track": "screen", "start": { "at": 0 } },
+      {
+        "id": "letterbox-on",
+        "type": "screen",
+        "letterbox": true,
+        "start": { "with": "lock" },
+        "track": "screen"
+      },
+      {
+        "id": "shady-music",
+        "track": "music",
+        "type": "music",
+        "song": "shady-dealings",
+        "volume": 0.35,
+        "ms": 3000,
+        "start": { "with": "lock" }
+      },
+      {
+        "id": "cam-ingrid",
+        "type": "camera",
+        "follow": "ingrid",
+        "ms": 500,
+        "start": { "with": "lock" },
+        "track": "camera"
+      },
+      {
+        "id": "ingrid-beams",
+        "type": "emote",
+        "actor": "ingrid",
+        "emote": "happy",
+        "start": { "after": "cam-ingrid" },
+        "track": "ingrid"
+      },
+      {
+        "id": "ingrid-hello",
+        "type": "say",
+        "actor": "ingrid",
+        "text": "Oh, a visitor! Welcome to Frosthollow, love.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "ingrid-beams" },
+        "track": "dialogue"
+      },
+      {
+        "id": "a-sneaks",
+        "type": "walk",
+        "actor": "mr-blob-a",
+        "to": { "tile": [34, 9] },
+        "stepMs": 1000,
+        "start": { "with": "ingrid-hello" },
+        "track": "mr-blob-a"
+      },
+      {
+        "id": "b-sneaks",
+        "type": "walk",
+        "actor": "mr-blob-b",
+        "to": { "tile": [33, 10] },
+        "stepMs": 1000,
+        "start": { "with": "a-sneaks", "offset": 400 },
+        "track": "mr-blob-b"
+      },
+      {
+        "id": "ingrid-adores",
+        "type": "emote",
+        "actor": "ingrid",
+        "emote": "hearts",
+        "start": { "after": "ingrid-hello" },
+        "track": "ingrid"
+      },
+      {
+        "id": "ingrid-blobs",
+        "type": "say",
+        "actor": "ingrid",
+        "text": "Have you met our blobs yet? Squishy little dears, the pair of them.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "ingrid-adores" },
+        "track": "dialogue"
+      },
+      {
+        "id": "ingrid-looks",
+        "track": "ingrid",
+        "type": "face",
+        "actor": "ingrid",
+        "toward": "mr-blob-a",
+        "start": { "with": "ingrid-blobs" }
+      },
+      {
+        "id": "cut-to-lurkers",
+        "type": "camera",
+        "follow": "mr-blob-a",
+        "ms": 500,
+        "start": { "after": "ingrid-blobs" },
+        "track": "camera"
+      },
+      {
+        "id": "music-swells",
+        "track": "music",
+        "type": "music",
+        "volume": 0.5,
+        "ms": 1500,
+        "start": { "with": "cut-to-lurkers" }
+      },
+      {
+        "id": "b-blushes",
+        "type": "emote",
+        "actor": "mr-blob-b",
+        "emote": "embarrassed",
+        "start": { "after": "cut-to-lurkers" },
+        "track": "mr-blob-b"
+      },
+      {
+        "id": "ice-cracks",
+        "track": "sound",
+        "type": "sound",
+        "sfx": "ice-crack",
+        "volume": 0.8,
+        "actor": "mr-blob-b",
+        "start": { "with": "b-blushes" }
+      },
+      {
+        "id": "a-shushes",
+        "type": "face",
+        "actor": "mr-blob-a",
+        "toward": "mr-blob-b",
+        "start": { "with": "b-blushes", "offset": 300 },
+        "track": "mr-blob-a"
+      },
+      { "id": "lurk-beat", "type": "wait", "ms": 1200, "start": { "with": "b-blushes" }, "track": "screen" },
+      {
+        "id": "back-to-ingrid",
+        "type": "camera",
+        "follow": "ingrid",
+        "ms": 500,
+        "start": { "after": "lurk-beat" },
+        "track": "camera"
+      },
+      {
+        "id": "ingrid-turns-back",
+        "track": "ingrid",
+        "type": "face",
+        "actor": "ingrid",
+        "toward": "you",
+        "start": { "with": "back-to-ingrid" }
+      },
+      {
+        "id": "ingrid-fire",
+        "type": "say",
+        "actor": "ingrid",
+        "text": "Now, I'd best see to the inn's fire. Stay warm out there!",
+        "show": "box",
+        "wait": "click",
+        "start": { "after": "back-to-ingrid" },
+        "track": "dialogue"
+      },
+      {
+        "id": "ingrid-goes",
+        "type": "walk",
+        "actor": "ingrid",
+        "to": { "tile": [38, 8] },
+        "stepMs": 700,
+        "face": "up",
+        "track": "ingrid",
+        "start": { "after": "ingrid-fire" }
+      },
+      {
+        "id": "ingrid-in",
+        "type": "leave",
+        "actor": "ingrid",
+        "how": "fade",
+        "door": [38, 7],
+        "track": "ingrid",
+        "start": { "after": "ingrid-goes" }
+      },
+      {
+        "id": "inn-door",
+        "track": "sound",
+        "type": "sound",
+        "sfx": 24,
+        "volume": 0.7,
+        "actor": "ingrid",
+        "start": { "with": "ingrid-in" }
+      },
+      {
+        "id": "a-comes",
+        "type": "walk",
+        "actor": "mr-blob-a",
+        "to": { "tile": [39, 11] },
+        "stepMs": 500,
+        "toward": "you",
+        "start": { "after": "ingrid-in", "offset": 300 },
+        "track": "mr-blob-a"
+      },
+      {
+        "id": "b-comes",
+        "type": "walk",
+        "actor": "mr-blob-b",
+        "to": { "tile": [40, 11] },
+        "stepMs": 500,
+        "face": "up",
+        "start": { "with": "a-comes", "offset": 500 },
+        "track": "mr-blob-b"
+      },
+      {
+        "id": "cam-blobs",
+        "type": "camera",
+        "follow": "mr-blob-a",
+        "ms": 500,
+        "start": { "with": "a-comes" },
+        "track": "camera"
+      },
+      {
+        "id": "you-turn",
+        "type": "face",
+        "actor": "you",
+        "toward": "mr-blob-a",
+        "start": { "with": "a-comes", "offset": 2500 },
+        "track": "you"
+      },
+      {
+        "id": "a-grins",
+        "type": "emote",
+        "actor": "mr-blob-a",
+        "emote": "happy",
+        "start": { "after": "b-comes" },
+        "track": "mr-blob-a"
+      },
+      {
+        "id": "a-psst",
+        "type": "say",
+        "actor": "mr-blob-a",
+        "text": "Psst. Hey. You. The tall one.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "a-grins" },
+        "track": "dialogue"
+      },
+      {
+        "id": "a-saw",
+        "type": "say",
+        "actor": "mr-blob-a",
+        "text": "We saw you listening last night. Don't worry, we're not cross.",
+        "show": "box",
+        "wait": "click",
+        "track": "dialogue",
+        "start": { "after": "a-psst" }
+      },
+      {
+        "id": "b-cross",
+        "type": "emote",
+        "actor": "mr-blob-b",
+        "emote": "confused",
+        "track": "mr-blob-b",
+        "start": { "after": "a-saw" }
+      },
+      {
+        "id": "b-little",
+        "type": "say",
+        "actor": "mr-blob-b",
+        "text": "We're a little bit cross.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "b-cross" },
+        "track": "dialogue"
+      },
+      {
+        "id": "a-pitch",
+        "type": "say",
+        "actor": "mr-blob-a",
+        "text": "We're taking Frosthollow. We just need someone the yeti can't squash.",
+        "show": "box",
+        "wait": "click",
+        "track": "dialogue",
+        "start": { "after": "b-little" }
+      },
+      {
+        "id": "a-sweetens",
+        "type": "emote",
+        "actor": "mr-blob-a",
+        "emote": "happy",
+        "track": "mr-blob-a",
+        "start": { "after": "a-pitch" }
+      },
+      {
+        "id": "a-offer",
+        "type": "say",
+        "actor": "mr-blob-a",
+        "text": "Help us, and the inn is yours. A whole inn! Free soup for life.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "a-sweetens" },
+        "track": "dialogue"
+      },
+      {
+        "id": "b-blushes-again",
+        "type": "emote",
+        "actor": "mr-blob-b",
+        "emote": "embarrassed",
+        "track": "mr-blob-b",
+        "start": { "after": "a-offer" }
+      },
+      {
+        "id": "b-terms",
+        "type": "say",
+        "actor": "mr-blob-b",
+        "text": "And nobody lays a finger on Ingrid. That part's not up for debate.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "b-blushes-again" },
+        "track": "dialogue"
+      },
+      {
+        "id": "ask",
+        "type": "choice",
+        "actor": "mr-blob-a",
+        "prompt": "So... are you in?",
+        "options": [
+          { "text": "I'm in. Down with the yeti!", "branch": "join" },
+          { "text": "Leave this village alone.", "branch": "refuse" },
+          { "text": "I'm telling Ingrid.", "branch": "tell" }
+        ],
+        "track": "dialogue",
+        "start": { "after": "b-terms" }
+      },
+      {
+        "id": "join-cheer",
+        "branch": "join",
+        "type": "emote",
+        "actor": "mr-blob-a",
+        "emote": "happy",
+        "start": { "at": 0 },
+        "track": "mr-blob-a"
+      },
+      {
+        "id": "join-a",
+        "branch": "join",
+        "type": "say",
+        "actor": "mr-blob-a",
+        "text": "Ha! Knew it. Meet us here after dark, and not a word to anyone.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "join-cheer" },
+        "track": "dialogue"
+      },
+      {
+        "id": "join-worry",
+        "branch": "join",
+        "type": "emote",
+        "actor": "mr-blob-b",
+        "emote": "sad",
+        "track": "mr-blob-b",
+        "start": { "after": "join-a" }
+      },
+      {
+        "id": "join-b",
+        "branch": "join",
+        "type": "say",
+        "actor": "mr-blob-b",
+        "text": "...Please don't make me regret this.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "join-worry" },
+        "track": "dialogue"
+      },
+      {
+        "id": "refuse-scowl",
+        "branch": "refuse",
+        "type": "emote",
+        "actor": "mr-blob-a",
+        "emote": "angry",
+        "start": { "at": 0 },
+        "track": "mr-blob-a"
+      },
+      {
+        "id": "refuse-a",
+        "branch": "refuse",
+        "type": "say",
+        "actor": "mr-blob-a",
+        "text": "Your loss. When we rule, you'll be shovelling the snow.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "refuse-scowl" },
+        "track": "dialogue"
+      },
+      {
+        "id": "refuse-relief",
+        "branch": "refuse",
+        "type": "emote",
+        "actor": "mr-blob-b",
+        "emote": "happy",
+        "track": "mr-blob-b",
+        "start": { "after": "refuse-a" }
+      },
+      {
+        "id": "refuse-b",
+        "branch": "refuse",
+        "type": "say",
+        "actor": "mr-blob-b",
+        "text": "Honestly? Phew.",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "refuse-relief" },
+        "track": "dialogue"
+      },
+      {
+        "id": "refuse-turn",
+        "branch": "refuse",
+        "type": "face",
+        "actor": "mr-blob-a",
+        "toward": "mr-blob-b",
+        "track": "mr-blob-a",
+        "start": { "after": "refuse-b" }
+      },
+      {
+        "id": "refuse-glare",
+        "branch": "refuse",
+        "type": "emote",
+        "actor": "mr-blob-a",
+        "emote": "angry",
+        "start": { "with": "refuse-turn" },
+        "track": "mr-blob-a"
+      },
+      {
+        "id": "refuse-beat",
+        "branch": "refuse",
+        "type": "wait",
+        "ms": 900,
+        "start": { "with": "refuse-turn" },
+        "track": "screen"
+      },
+      {
+        "id": "tell-panic",
+        "branch": "tell",
+        "type": "emote",
+        "actor": "mr-blob-b",
+        "emote": "surprised",
+        "start": { "at": 0 },
+        "track": "mr-blob-b"
+      },
+      {
+        "id": "tell-b",
+        "branch": "tell",
+        "type": "say",
+        "actor": "mr-blob-b",
+        "text": "No! She'd never speak to me again!",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "tell-panic" },
+        "track": "dialogue"
+      },
+      {
+        "id": "tell-smirk",
+        "branch": "tell",
+        "type": "emote",
+        "actor": "mr-blob-a",
+        "emote": "happy",
+        "track": "mr-blob-a",
+        "start": { "after": "tell-b" }
+      },
+      {
+        "id": "tell-a",
+        "branch": "tell",
+        "type": "say",
+        "actor": "mr-blob-a",
+        "text": "Go on, tell her. Look at us. Who'd believe we're dangerous?",
+        "show": "box",
+        "wait": "click",
+        "start": { "with": "tell-smirk" },
+        "track": "dialogue"
+      },
+      {
+        "id": "a-off",
+        "type": "walk",
+        "actor": "mr-blob-a",
+        "to": { "tile": [33, 9] },
+        "stepMs": 500,
+        "track": "mr-blob-a",
+        "start": { "after": "ask" }
+      },
+      {
+        "id": "b-off",
+        "type": "walk",
+        "actor": "mr-blob-b",
+        "to": { "tile": [33, 10] },
+        "stepMs": 500,
+        "start": { "with": "a-off" },
+        "track": "mr-blob-b"
+      },
+      {
+        "id": "camera-home",
+        "type": "camera",
+        "home": true,
+        "ms": 800,
+        "start": { "with": "a-off" },
+        "track": "camera"
+      },
+      {
+        "id": "music-out",
+        "track": "music",
+        "type": "music",
+        "stop": true,
+        "ms": 2500,
+        "start": { "with": "camera-home" }
+      },
+      {
+        "id": "a-gone",
+        "type": "leave",
+        "actor": "mr-blob-a",
+        "how": "fade",
+        "start": { "after": "a-off" },
+        "track": "mr-blob-a"
+      },
+      {
+        "id": "b-gone",
+        "type": "leave",
+        "actor": "mr-blob-b",
+        "how": "fade",
+        "start": { "after": "b-off" },
+        "track": "mr-blob-b"
+      },
+      {
+        "id": "letterbox-off",
+        "type": "screen",
+        "letterbox": false,
+        "start": { "after": "a-gone" },
+        "track": "screen"
+      },
+      { "id": "unlock", "type": "unlock", "start": { "with": "letterbox-off" }, "track": "screen" }
+    ]
+  },
+  "compiled": {
+    "by": "eo-scene-studio 0.1.0",
+    "uses": [
+      "lock", "screen", "music", "camera", "emote", "say", "walk", "wait", "face", "sound", "leave", "choice",
+      "unlock"
+    ],
+    "cues": [
+      { "id": 0, "do": "lock" },
+      { "id": 1, "do": "screen", "letterbox": true },
+      { "id": 2, "do": "music", "song": "shady-dealings", "volume": 0.35, "ms": 3000 },
+      { "id": 3, "do": "camera", "follow": "ingrid", "ms": 500 },
+      { "id": 4, "do": "emote", "actor": "ingrid", "emote": "happy", "after": [3] },
+      {
+        "id": 5,
+        "do": "say",
+        "actor": "ingrid",
+        "text": "Oh, a visitor! Welcome to Frosthollow, love.",
+        "show": "box",
+        "wait": "click",
+        "ms": 3600,
+        "after": [3]
+      },
+      {
+        "id": 6,
+        "do": "walk",
+        "actor": "mr-blob-a",
+        "from": [30, 8],
+        "path": [[31, 8], [32, 8], [33, 8], [34, 8], [34, 9]],
+        "stepMs": 1000,
+        "steps": "snow",
+        "stepVolume": 0.4,
+        "after": [3]
+      },
+      { "id": 7, "do": "wait", "ms": 400, "after": [3] },
+      {
+        "id": 8,
+        "do": "walk",
+        "actor": "mr-blob-b",
+        "from": [32, 9],
+        "path": [[33, 9], [33, 10]],
+        "stepMs": 1000,
+        "steps": "snow",
+        "stepVolume": 0.4,
+        "after": [7]
+      },
+      { "id": 9, "do": "emote", "actor": "ingrid", "emote": "hearts", "after": [5] },
+      {
+        "id": 10,
+        "do": "say",
+        "actor": "ingrid",
+        "text": "Have you met our blobs yet? Squishy little dears, the pair of them.",
+        "show": "box",
+        "wait": "click",
+        "ms": 4800,
+        "after": [5]
+      },
+      { "id": 11, "do": "face", "actor": "ingrid", "dir": "left", "after": [5] },
+      { "id": 12, "do": "camera", "follow": "mr-blob-a", "ms": 500, "after": [10] },
+      { "id": 13, "do": "music", "volume": 0.5, "ms": 1500, "after": [10] },
+      { "id": 14, "do": "emote", "actor": "mr-blob-b", "emote": "embarrassed", "after": [12] },
+      { "id": 15, "do": "sound", "sfx": "ice-crack", "volume": 0.8, "actor": "mr-blob-b", "after": [12] },
+      { "id": 16, "do": "wait", "ms": 300, "after": [12] },
+      { "id": 17, "do": "face", "actor": "mr-blob-a", "dir": "left", "after": [16] },
+      { "id": 18, "do": "wait", "ms": 1200, "after": [12] },
+      { "id": 19, "do": "camera", "follow": "ingrid", "ms": 500, "after": [18] },
+      { "id": 20, "do": "face", "actor": "ingrid", "dir": "down", "after": [18] },
+      {
+        "id": 21,
+        "do": "say",
+        "actor": "ingrid",
+        "text": "Now, I'd best see to the inn's fire. Stay warm out there!",
+        "show": "box",
+        "wait": "click",
+        "ms": 4300,
+        "after": [19]
+      },
+      {
+        "id": 22,
+        "do": "walk",
+        "actor": "ingrid",
+        "from": [39, 9],
+        "path": [[38, 9], [38, 8]],
+        "stepMs": 700,
+        "face": "up",
+        "steps": "snow",
+        "after": [21]
+      },
+      { "id": 23, "do": "leave", "actor": "ingrid", "how": "fade", "door": [38, 7], "after": [22] },
+      { "id": 24, "do": "sound", "sfx": 24, "volume": 0.7, "actor": "ingrid", "after": [22] },
+      { "id": 25, "do": "wait", "ms": 300, "after": [23] },
+      {
+        "id": 26,
+        "do": "walk",
+        "actor": "mr-blob-a",
+        "from": [34, 9],
+        "path": [[34, 10], [34, 11], [35, 11], [36, 11], [37, 11], [38, 11], [39, 11]],
+        "stepMs": 500,
+        "steps": "snow",
+        "stepVolume": 0.4,
+        "face": "up",
+        "after": [25]
+      },
+      { "id": 27, "do": "wait", "ms": 500, "after": [25] },
+      {
+        "id": 28,
+        "do": "walk",
+        "actor": "mr-blob-b",
+        "from": [33, 10],
+        "path": [
+          [33, 11], [33, 12], [34, 12], [35, 12], [36, 12], [37, 12], [38, 12], [39, 12], [40, 12], [40, 11]
+        ],
+        "stepMs": 500,
+        "face": "up",
+        "steps": "snow",
+        "stepVolume": 0.4,
+        "after": [27]
+      },
+      { "id": 29, "do": "camera", "follow": "mr-blob-a", "ms": 500, "after": [25] },
+      { "id": 30, "do": "wait", "ms": 2500, "after": [25] },
+      { "id": 31, "do": "face", "actor": "you", "dir": "down", "after": [30] },
+      { "id": 32, "do": "emote", "actor": "mr-blob-a", "emote": "happy", "after": [28] },
+      {
+        "id": 33,
+        "do": "say",
+        "actor": "mr-blob-a",
+        "text": "Psst. Hey. You. The tall one.",
+        "show": "box",
+        "wait": "click",
+        "ms": 2700,
+        "after": [28]
+      },
+      {
+        "id": 34,
+        "do": "say",
+        "actor": "mr-blob-a",
+        "text": "We saw you listening last night. Don't worry, we're not cross.",
+        "show": "box",
+        "wait": "click",
+        "ms": 4600,
+        "after": [33]
+      },
+      { "id": 35, "do": "emote", "actor": "mr-blob-b", "emote": "confused", "after": [34] },
+      {
+        "id": 36,
+        "do": "say",
+        "actor": "mr-blob-b",
+        "text": "We're a little bit cross.",
+        "show": "box",
+        "wait": "click",
+        "ms": 2500,
+        "after": [34]
+      },
+      {
+        "id": 37,
+        "do": "say",
+        "actor": "mr-blob-a",
+        "text": "We're taking Frosthollow. We just need someone the yeti can't squash.",
+        "show": "box",
+        "wait": "click",
+        "ms": 4900,
+        "after": [36]
+      },
+      { "id": 38, "do": "emote", "actor": "mr-blob-a", "emote": "happy", "after": [37] },
+      {
+        "id": 39,
+        "do": "say",
+        "actor": "mr-blob-a",
+        "text": "Help us, and the inn is yours. A whole inn! Free soup for life.",
+        "show": "box",
+        "wait": "click",
+        "ms": 4600,
+        "after": [37]
+      },
+      { "id": 40, "do": "emote", "actor": "mr-blob-b", "emote": "embarrassed", "after": [39] },
+      {
+        "id": 41,
+        "do": "say",
+        "actor": "mr-blob-b",
+        "text": "And nobody lays a finger on Ingrid. That part's not up for debate.",
+        "show": "box",
+        "wait": "click",
+        "ms": 4800,
+        "after": [39]
+      },
+      {
+        "id": 42,
+        "do": "choice",
+        "actor": "mr-blob-a",
+        "prompt": "So... are you in?",
+        "options": [
+          { "text": "I'm in. Down with the yeti!", "branch": "join" },
+          { "text": "Leave this village alone.", "branch": "refuse" },
+          { "text": "I'm telling Ingrid.", "branch": "tell" }
+        ],
+        "after": [41]
+      },
+      { "id": 43, "do": "emote", "actor": "mr-blob-a", "emote": "happy", "branch": [42, 0] },
+      {
+        "id": 44,
+        "do": "say",
+        "actor": "mr-blob-a",
+        "text": "Ha! Knew it. Meet us here after dark, and not a word to anyone.",
+        "show": "box",
+        "wait": "click",
+        "ms": 4600,
+        "branch": [42, 0]
+      },
+      { "id": 45, "do": "emote", "actor": "mr-blob-b", "emote": "sad", "after": [44], "branch": [42, 0] },
+      {
+        "id": 46,
+        "do": "say",
+        "actor": "mr-blob-b",
+        "text": "...Please don't make me regret this.",
+        "show": "box",
+        "wait": "click",
+        "ms": 3100,
+        "after": [44],
+        "branch": [42, 0]
+      },
+      { "id": 47, "do": "emote", "actor": "mr-blob-a", "emote": "angry", "branch": [42, 1] },
+      {
+        "id": 48,
+        "do": "say",
+        "actor": "mr-blob-a",
+        "text": "Your loss. When we rule, you'll be shovelling the snow.",
+        "show": "box",
+        "wait": "click",
+        "ms": 4200,
+        "branch": [42, 1]
+      },
+      { "id": 49, "do": "emote", "actor": "mr-blob-b", "emote": "happy", "after": [48], "branch": [42, 1] },
+      {
+        "id": 50,
+        "do": "say",
+        "actor": "mr-blob-b",
+        "text": "Honestly? Phew.",
+        "show": "box",
+        "wait": "click",
+        "ms": 2000,
+        "after": [48],
+        "branch": [42, 1]
+      },
+      { "id": 51, "do": "face", "actor": "mr-blob-a", "dir": "right", "after": [50], "branch": [42, 1] },
+      { "id": 52, "do": "emote", "actor": "mr-blob-a", "emote": "angry", "after": [50], "branch": [42, 1] },
+      { "id": 53, "do": "wait", "ms": 900, "after": [50], "branch": [42, 1] },
+      { "id": 54, "do": "emote", "actor": "mr-blob-b", "emote": "surprised", "branch": [42, 2] },
+      {
+        "id": 55,
+        "do": "say",
+        "actor": "mr-blob-b",
+        "text": "No! She'd never speak to me again!",
+        "show": "box",
+        "wait": "click",
+        "ms": 3000,
+        "branch": [42, 2]
+      },
+      { "id": 56, "do": "emote", "actor": "mr-blob-a", "emote": "happy", "after": [55], "branch": [42, 2] },
+      {
+        "id": 57,
+        "do": "say",
+        "actor": "mr-blob-a",
+        "text": "Go on, tell her. Look at us. Who'd believe we're dangerous?",
+        "show": "box",
+        "wait": "click",
+        "ms": 4400,
+        "after": [55],
+        "branch": [42, 2]
+      },
+      {
+        "id": 58,
+        "do": "walk",
+        "actor": "mr-blob-a",
+        "from": [39, 11],
+        "path": [[38, 11], [37, 11], [36, 11], [35, 11], [34, 11], [33, 11], [33, 10], [33, 9]],
+        "stepMs": 500,
+        "steps": "snow",
+        "stepVolume": 0.4,
+        "after": [42]
+      },
+      {
+        "id": 59,
+        "do": "walk",
+        "actor": "mr-blob-b",
+        "from": [40, 11],
+        "path": [[39, 11], [38, 11], [37, 11], [36, 11], [35, 11], [34, 11], [33, 11], [33, 10]],
+        "stepMs": 500,
+        "steps": "snow",
+        "stepVolume": 0.4,
+        "after": [42]
+      },
+      { "id": 60, "do": "camera", "home": true, "ms": 800, "after": [42] },
+      { "id": 61, "do": "music", "stop": true, "ms": 2500, "after": [42] },
+      { "id": 62, "do": "leave", "actor": "mr-blob-a", "how": "fade", "after": [58] },
+      { "id": 63, "do": "leave", "actor": "mr-blob-b", "how": "fade", "after": [59] },
+      { "id": 64, "do": "screen", "letterbox": false, "after": [62] },
+      { "id": 65, "do": "unlock", "after": [62] }
+    ]
+  }
+}

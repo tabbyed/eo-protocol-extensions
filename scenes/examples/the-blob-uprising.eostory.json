@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tabbyed/eo-protocol-extensions/master/scenes/story.schema.json",
+  "format": 1,
+  "id": "the-blob-uprising",
+  "title": "The blob uprising",
+  "summary": "Two blobs plot to take over Frosthollow. One of them is sweet on Ingrid, and the yeti is in the way.",
+  "characters": {
+    "mr-blob-a": {
+      "npc": 3,
+      "about": "The schemer. Grins a lot, talks big, agrees to anything that keeps the plan going."
+    },
+    "mr-blob-b": { "npc": 3, "about": "The worrier. Nervous, honest, and sweet on Ingrid." },
+    "ingrid": {
+      "npc": 311,
+      "about": "Frosthollow's warm-hearted resident. Adores the blobs and has no idea what they're up to."
+    },
+    "yeti": { "npc": 208, "about": "Big, loud, and the reason the blobs haven't tried anything yet." }
+  },
+  "beats": [
+    {
+      "scene": "blobs-plot",
+      "when": { "enterMap": { "map": 19 } },
+      "note": "The player's first visit to Frosthollow: they overhear the blobs."
+    },
+    {
+      "scene": "blobs-recruit",
+      "when": { "talkedToNpc": { "npc": 311 } },
+      "after": ["blobs-plot"],
+      "note": "Talking to Ingrid afterwards: once she goes into the inn, the blobs ask the player to join them. The player picks join, refuse or tell (threaten to tell Ingrid)."
+    }
+  ]
+}

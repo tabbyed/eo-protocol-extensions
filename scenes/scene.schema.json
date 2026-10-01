@@ -1,0 +1,489 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/tabbyed/eo-protocol-extensions/master/scenes/scene.schema.json",
+  "title": "EO scene",
+  "description": "A cutscene for Endless Online servers and clients. `source` is what an editor authors; `compiled` is what servers and clients run. See README.md for the rules this schema can't express.",
+  "type": "object",
+  "required": ["format", "id", "kind", "map", "cast", "compiled"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "format": {
+      "description": "The format version. Runners refuse a version they don't know.",
+      "const": 1
+    },
+    "id": {
+      "description": "The scene's name, as EQF's PlayScene and $scene use it. The file is <id>.eoscene.json.",
+      "$ref": "#/definitions/name"
+    },
+    "title": { "type": "string", "maxLength": 64 },
+    "summary": {
+      "description": "What happens in the scene, in a sentence or two: for the story it's part of, and whoever writes the next scene.",
+      "type": "string",
+      "maxLength": 1000
+    },
+    "kind": {
+      "description": "personal: one player watches, locked, with stand-ins for real NPCs. world: everyone in range sees real NPCs directed by the server.",
+      "enum": ["personal", "world"]
+    },
+    "map": {
+      "description": "The map the scene starts on. A personal scene can take the player to others with map cues.",
+      "$ref": "#/definitions/mapId"
+    },
+    "instanced": {
+      "description": "personal: the player is out of the world while it plays. Other players don't see them and nothing reaches them; a map cue moves them unseen. For intros, memories and dreams.",
+      "type": "boolean"
+    },
+    "timeOfDay": {
+      "description": "The time of day the scene plays at, whatever the server's clock says, as HH:MM. Leave it out to play at whatever time it is.",
+      "type": "string",
+      "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+    },
+    "footsteps": {
+      "description": "The surface every walk sounds on, a step a tile: the sound set <surface>-step in the scenes folder's audio/sounds. A walk's or an actor's steps say otherwise.",
+      "$ref": "#/definitions/audioName"
+    },
+    "duck": {
+      "description": "How loud the music stays while someone speaks or a choice is up, 0 to 1. Leave it out to keep it as it is.",
+      "$ref": "#/definitions/volume"
+    },
+    "cast": {
+      "description": "Everyone in the scene, by name.",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/definitions/name" },
+      "additionalProperties": { "$ref": "#/definitions/actor" }
+    },
+    "source": { "$ref": "#/definitions/source" },
+    "compiled": { "$ref": "#/definitions/compiled" }
+  },
+
+  "definitions": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,47}$"
+    },
+    "mapId": { "type": "integer", "minimum": 1, "maximum": 64008 },
+    "npcId": {
+      "description": "An NPC's id in the ENF file (1-based).",
+      "type": "integer", "minimum": 1, "maximum": 64008
+    },
+    "tile": {
+      "description": "[x, y] on the map where it happens: the actor's, the scene's, or a map cue's.",
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0, "maximum": 252 },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "direction": { "enum": ["down", "left", "up", "right"] },
+    "ms": { "type": "integer", "minimum": 0, "maximum": 600000 },
+    "stepMs": {
+      "description": "Time per tile. 400 is the fastest EO clients animate cleanly.",
+      "type": "integer", "minimum": 400, "maximum": 10000
+    },
+    "pose": {
+      "description": "An animation, from the sprite's frames: idle (standing, breathing if the graphic does), walk (the four-frame walk cycle), attack (the two attack frames) or, for the player, sit (on the ground: knocked down, or resting; idle stands them up). custom:<name> is a client's own animation.",
+      "type": "string",
+      "pattern": "^(idle|walk|attack|sit|custom:[a-z0-9-]{1,32})$"
+    },
+    "emote": {
+      "enum": ["happy", "depressed", "sad", "angry", "confused", "surprised", "hearts", "moon",
+               "suicidal", "embarrassed", "drunk", "trade", "levelup", "playful"]
+    },
+    "text": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "audioName": {
+      "description": "A file in the scenes folder's audio/music or audio/sounds, without its extension (.ogg or .wav). A sound name may be a set: name-1, name-2... one picked each time.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "volume": { "type": "number", "minimum": 0, "maximum": 1 },
+    "steps": {
+      "description": "Footsteps: a surface (the sound set <surface>-step), or none.",
+      "$ref": "#/definitions/audioName"
+    },
+
+    "actor": {
+      "type": "object",
+      "required": ["role"],
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "description": "npc: an NPC already on the map. extra: an NPC made for the scene. player: the player watching (personal scenes).",
+          "enum": ["npc", "extra", "player"]
+        },
+        "spawn": {
+          "description": "npc: the map file's NPC spawn entry, counted from 0.",
+          "type": "integer", "minimum": 0
+        },
+        "npc": {
+          "description": "npc: the first live NPC with this ENF id on the map. extra: the ENF id to show.",
+          "$ref": "#/definitions/npcId"
+        },
+        "at": {
+          "description": "Where the scene expects the actor when it starts. Extras and stand-ins appear here.",
+          "$ref": "#/definitions/tile"
+        },
+        "facing": { "$ref": "#/definitions/direction" },
+        "hidden": {
+          "description": "extra: not shown until an appear cue.",
+          "type": "boolean"
+        },
+        "map": {
+          "description": "The map the actor starts on, when it isn't the scene's. The runner sets the actor up when the scene first arrives there.",
+          "$ref": "#/definitions/mapId"
+        },
+        "steps": {
+          "description": "The footsteps this actor's walks make, over the scene's footsteps: a surface, or none.",
+          "$ref": "#/definitions/steps"
+        },
+        "stepVolume": {
+          "description": "How loud this actor's footsteps are, 0 to 1: softer feet, smaller creatures.",
+          "$ref": "#/definitions/volume"
+        },
+        "label": {
+          "description": "The name the dialogue box shows for this actor's lines, instead of the NPC's own (or 'You' for the player): Mr Blob A and Mr Blob B for two NPCs the game calls Blob.",
+          "type": "string", "minLength": 1, "maxLength": 32
+        },
+        "wears": {
+          "description": "player: what they're seen wearing for the scene, by EIF item id: a weapon, shield, armour, hat and boots. Armour is made for one gender, so list one of each and each player wears theirs. Their own gear comes back when the scene ends.",
+          "type": "array", "maxItems": 8, "uniqueItems": true,
+          "items": { "type": "integer", "minimum": 1, "maximum": 64008 }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "role": { "const": "npc" } } },
+          "then": {
+            "required": ["at"],
+            "oneOf": [ { "required": ["spawn"] }, { "required": ["npc"] } ],
+            "not": { "anyOf": [ { "required": ["hidden"] }, { "required": ["wears"] } ] }
+          }
+        },
+        {
+          "if": { "properties": { "role": { "const": "extra" } } },
+          "then": { "required": ["npc", "at"], "not": { "anyOf": [ { "required": ["spawn"] }, { "required": ["wears"] } ] } }
+        },
+        {
+          "if": { "properties": { "role": { "const": "player" } } },
+          "then": {
+            "not": { "anyOf": [ { "required": ["spawn"] }, { "required": ["npc"] }, { "required": ["hidden"] } ] }
+          }
+        }
+      ]
+    },
+
+    "compiled": {
+      "description": "What servers and clients run: cues in order, each starting once the cues it waits for are done.",
+      "type": "object",
+      "required": ["cues"],
+      "additionalProperties": false,
+      "properties": {
+        "by": {
+          "description": "The tool and version that compiled it.",
+          "type": "string", "maxLength": 64
+        },
+        "uses": {
+          "description": "Every cue type in the scene, so a runner can refuse what it can't show.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/cueType" }
+        },
+        "cues": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "items": { "$ref": "#/definitions/cue" }
+        }
+      }
+    },
+
+    "cueType": {
+      "enum": ["lock", "unlock", "walk", "face", "pose", "emote", "say", "choice", "camera",
+               "screen", "sound", "music", "effect", "quake", "appear", "leave", "wait", "map"]
+    },
+
+    "cue": {
+      "type": "object",
+      "required": ["id", "do"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "The cue's index in cues.",
+          "type": "integer", "minimum": 0
+        },
+        "do": { "$ref": "#/definitions/cueType" },
+        "after": {
+          "description": "Cues that must be done before this one starts. Only earlier ids, and only from the same branch.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "integer", "minimum": 0 }
+        },
+        "branch": {
+          "description": "[choice cue id, option index]: this cue runs only if that option is picked, and not before it is.",
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "note": {
+          "description": "A caption for people reading the file. Runners ignore it.",
+          "type": "string", "maxLength": 200
+        },
+
+        "actor": { "$ref": "#/definitions/name" },
+        "from": { "$ref": "#/definitions/tile" },
+        "path": {
+          "description": "walk: each tile stepped onto, in order. Each is next to the one before, the first next to from.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": { "$ref": "#/definitions/tile" }
+        },
+        "stepMs": { "$ref": "#/definitions/stepMs" },
+        "face": {
+          "description": "walk: the direction to face on arrival.",
+          "$ref": "#/definitions/direction"
+        },
+        "idle": {
+          "description": "walk: the pose to loop after arriving. Default idle.",
+          "$ref": "#/definitions/pose"
+        },
+        "steps": {
+          "description": "walk: the surface its footsteps sound on, a step a tile, as compiled from the walk, its actor and the scene. None when it's left out.",
+          "$ref": "#/definitions/audioName"
+        },
+        "stepVolume": {
+          "description": "walk: how loud its footsteps are, 0 to 1, as compiled from the walk and its actor. Full when it's left out.",
+          "$ref": "#/definitions/volume"
+        },
+        "dir": { "$ref": "#/definitions/direction" },
+        "pose": {
+          "description": "pose: the animation to play. walk: what loops while moving (default walk).",
+          "$ref": "#/definitions/pose"
+        },
+        "loop": {
+          "description": "pose: true loops it until changed; false plays it once, then idle. music: false plays the song once; it loops otherwise.",
+          "type": "boolean"
+        },
+        "emote": { "$ref": "#/definitions/emote" },
+        "text": { "$ref": "#/definitions/text" },
+        "show": {
+          "description": "say: box is a dialogue box with the speaker's face; balloon is the chat balloon over their head.",
+          "enum": ["box", "balloon"]
+        },
+        "wait": {
+          "description": "say: click waits for the player to close it; time waits ms.",
+          "enum": ["click", "time"]
+        },
+        "ms": { "$ref": "#/definitions/ms" },
+        "prompt": { "$ref": "#/definitions/text" },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": ["text"],
+            "additionalProperties": false,
+            "properties": {
+              "text": { "type": "string", "minLength": 1, "maxLength": 64 },
+              "branch": {
+                "description": "The branch the option opens, by the name stories and EQF use to wait on it.",
+                "$ref": "#/definitions/name"
+              }
+            }
+          }
+        },
+        "to": { "$ref": "#/definitions/tile" },
+        "follow": { "$ref": "#/definitions/name" },
+        "home": {
+          "description": "camera: back to the player.",
+          "const": true
+        },
+        "letterbox": { "type": "boolean" },
+        "fade": { "enum": ["out", "in"] },
+        "title": { "$ref": "#/definitions/text" },
+        "sfx": {
+          "description": "sound: the game's sound effect by number (sfxNNN.wav), or a sound of the scene's by name.",
+          "oneOf": [ { "type": "integer", "minimum": 1, "maximum": 252 }, { "$ref": "#/definitions/audioName" } ]
+        },
+        "song": {
+          "description": "music: the game's MIDI song by number, or a song of the scene's by name (audio/music).",
+          "oneOf": [ { "type": "integer", "minimum": 1, "maximum": 252 }, { "$ref": "#/definitions/audioName" } ]
+        },
+        "stop": {
+          "description": "music: fade what's playing out over ms.",
+          "const": true
+        },
+        "volume": {
+          "description": "music: the song's volume, reached over ms; with no song or stop, a new volume for what's playing. sound: its volume.",
+          "$ref": "#/definitions/volume"
+        },
+        "at": { "$ref": "#/definitions/tile" },
+        "effect": { "type": "integer", "minimum": 1, "maximum": 64008 },
+        "strength": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "facing": {
+          "description": "appear, map: the way to face on arriving.",
+          "$ref": "#/definitions/direction"
+        },
+        "how": {
+          "description": "appear: fade or pop. leave: fade, vanish or death. map: fade or cut.",
+          "enum": ["fade", "pop", "vanish", "death", "cut"]
+        },
+        "map": {
+          "description": "map: the map the player is taken to. appear: the map the actor appears on, when it isn't the one it's on.",
+          "$ref": "#/definitions/mapId"
+        },
+        "door": {
+          "description": "leave: the warp next to the actor it goes through, on servers that send NPCs through warps.",
+          "$ref": "#/definitions/tile"
+        }
+      },
+      "allOf": [
+        { "if": { "properties": { "do": { "const": "walk" } } },
+          "then": { "required": ["actor", "from", "path", "stepMs"] } },
+        { "if": { "properties": { "do": { "const": "face" } } },
+          "then": { "required": ["actor", "dir"] } },
+        { "if": { "properties": { "do": { "const": "pose" } } },
+          "then": { "required": ["actor", "pose"] } },
+        { "if": { "properties": { "do": { "const": "emote" } } },
+          "then": { "required": ["actor", "emote"] } },
+        { "if": { "properties": { "do": { "const": "say" } } },
+          "then": { "required": ["actor", "text", "show", "wait", "ms"] } },
+        { "if": { "properties": { "do": { "const": "choice" } } },
+          "then": { "required": ["options"] } },
+        { "if": { "properties": { "do": { "const": "camera" } } },
+          "then": {
+            "required": ["ms"],
+            "oneOf": [ { "required": ["to"] }, { "required": ["follow"] }, { "required": ["home"] } ]
+          } },
+        { "if": { "properties": { "do": { "const": "screen" } } },
+          "then": {
+            "oneOf": [
+              { "required": ["letterbox"] },
+              { "required": ["fade", "ms"] },
+              { "required": ["title", "ms"] }
+            ]
+          } },
+        { "if": { "properties": { "do": { "const": "sound" } } },
+          "then": { "required": ["sfx"] } },
+        { "if": { "properties": { "do": { "const": "music" } } },
+          "then": { "oneOf": [ { "required": ["song"] }, { "required": ["stop"] },
+                               { "required": ["volume"], "not": { "anyOf": [ { "required": ["song"] }, { "required": ["stop"] } ] } } ] } },
+        { "if": { "properties": { "do": { "const": "effect" } } },
+          "then": { "required": ["at", "effect"] } },
+        { "if": { "properties": { "do": { "const": "quake" } } },
+          "then": { "required": ["strength"] } },
+        { "if": { "properties": { "do": { "const": "appear" } } },
+          "then": { "required": ["actor", "at"],
+                    "properties": { "how": { "enum": ["fade", "pop"] } } } },
+        { "if": { "properties": { "do": { "const": "leave" } } },
+          "then": { "required": ["actor", "how"],
+                    "properties": { "how": { "enum": ["fade", "vanish", "death"] } } } },
+        { "if": { "properties": { "do": { "const": "wait" } } },
+          "then": { "required": ["ms"] } },
+        { "if": { "properties": { "do": { "const": "map" } } },
+          "then": { "required": ["map", "at"],
+                    "properties": { "how": { "enum": ["fade", "cut"] } } } }
+      ]
+    },
+
+    "source": {
+      "description": "What an editor authors. Runners never read it; only editors do.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "markers": {
+          "description": "Named tiles, so clips can say 'the inn door' rather than coordinates.",
+          "type": "object",
+          "propertyNames": { "$ref": "#/definitions/name" },
+          "additionalProperties": {
+            "type": "object",
+            "required": ["at"],
+            "additionalProperties": false,
+            "properties": {
+              "at": { "$ref": "#/definitions/tile" },
+              "note": { "type": "string", "maxLength": 200 }
+            }
+          }
+        },
+        "tracks": {
+          "description": "The editor's rows, top to bottom: cast names plus camera, screen, dialogue and audio.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/name" }
+        },
+        "clips": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/clip" }
+        },
+        "editor": {
+          "description": "The editor's own state: zoom, scroll, selection. Free-form.",
+          "type": "object"
+        }
+      }
+    },
+
+    "clip": {
+      "description": "One block on a track. Clips hold the same fields as cues, but place walks with to and via instead of a baked path, and are anchored instead of listed.",
+      "type": "object",
+      "required": ["id", "track", "type", "start"],
+      "properties": {
+        "id": { "$ref": "#/definitions/name" },
+        "track": { "$ref": "#/definitions/name" },
+        "type": { "$ref": "#/definitions/cueType" },
+        "start": {
+          "description": "at: ms from the start of the scene, or of the clip's branch. after: once that clip is done. with: when that clip starts. offset: ms later.",
+          "type": "object",
+          "additionalProperties": false,
+          "oneOf": [ { "required": ["at"] }, { "required": ["after"] }, { "required": ["with"] } ],
+          "properties": {
+            "at": { "$ref": "#/definitions/ms" },
+            "after": { "$ref": "#/definitions/name" },
+            "with": { "$ref": "#/definitions/name" },
+            "offset": { "$ref": "#/definitions/ms" }
+          }
+        },
+        "branch": {
+          "description": "The branch this clip belongs to, named by a choice clip's option.",
+          "$ref": "#/definitions/name"
+        },
+        "to": {
+          "description": "walk: where to, by marker, tile, or near: the nearest free tile beside that cast member, wherever they are by then.",
+          "type": "object",
+          "additionalProperties": false,
+          "oneOf": [ { "required": ["marker"] }, { "required": ["tile"] }, { "required": ["near"] } ],
+          "properties": {
+            "marker": { "$ref": "#/definitions/name" },
+            "tile": { "$ref": "#/definitions/tile" },
+            "near": { "$ref": "#/definitions/name" }
+          }
+        },
+        "toward": {
+          "description": "face, or walk once it arrives: turn towards that cast member, wherever they are by then. A face clip with toward needs no dir.",
+          "$ref": "#/definitions/name"
+        },
+        "via": {
+          "description": "walk: tiles the path must pass through, in order.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/tile" }
+        },
+        "options": {
+          "description": "choice: each option names the branch it opens.",
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": ["text", "branch"],
+            "additionalProperties": false,
+            "properties": {
+              "text": { "type": "string", "minLength": 1, "maxLength": 64 },
+              "branch": { "$ref": "#/definitions/name" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

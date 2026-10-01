@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/tabbyed/eo-protocol-extensions/master/scenes/story.schema.json",
+  "title": "EO story",
+  "description": "Scenes in the order a player meets them: the checkpoint that plays each, what must have played first, and the characters they share. See README.md, Stories.",
+  "type": "object",
+  "required": ["format", "id", "beats"],
+  "additionalProperties": false,
+  "definitions": {
+    "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,47}$" },
+    "mapId": { "type": "integer", "minimum": 1, "maximum": 64008 },
+    "npcId": { "type": "integer", "minimum": 1, "maximum": 64008 },
+    "tile": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0, "maximum": 252 },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "needs": {
+      "description": "A scene that must have played: its id, or its id and the option picked in it.",
+      "oneOf": [
+        { "$ref": "#/definitions/name" },
+        {
+          "type": "object",
+          "required": ["scene"],
+          "additionalProperties": false,
+          "properties": { "scene": { "$ref": "#/definitions/name" }, "choice": { "$ref": "#/definitions/name" } }
+        }
+      ]
+    },
+    "when": {
+      "description": "The checkpoint that plays a beat, named as reoserv's quest rules are.",
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "start": { "description": "As soon as the beats it waits for have played.", "type": "object", "additionalProperties": false },
+        "newCharacter": { "description": "A new character's first time in the world: their first login, before anything else plays.", "type": "object", "additionalProperties": false },
+        "enterMap": {
+          "type": "object", "required": ["map"], "additionalProperties": false,
+          "properties": { "map": { "$ref": "#/definitions/mapId" } }
+        },
+        "enterCoord": {
+          "type": "object", "required": ["map", "at"], "additionalProperties": false,
+          "properties": { "map": { "$ref": "#/definitions/mapId" }, "at": { "$ref": "#/definitions/tile" } }
+        },
+        "leaveMap": {
+          "type": "object", "required": ["map"], "additionalProperties": false,
+          "properties": { "map": { "$ref": "#/definitions/mapId" } }
+        },
+        "talkedToNpc": {
+          "type": "object", "required": ["npc"], "additionalProperties": false,
+          "properties": { "npc": { "$ref": "#/definitions/npcId" } }
+        },
+        "killedNpcs": {
+          "type": "object", "required": ["npc"], "additionalProperties": false,
+          "properties": { "npc": { "$ref": "#/definitions/npcId" }, "amount": { "type": "integer", "minimum": 1 } }
+        },
+        "gotItems": {
+          "type": "object", "required": ["item"], "additionalProperties": false,
+          "properties": { "item": { "type": "integer", "minimum": 1 }, "amount": { "type": "integer", "minimum": 1 } }
+        },
+        "afterScene": {
+          "type": "object", "required": ["scene"], "additionalProperties": false,
+          "properties": { "scene": { "$ref": "#/definitions/name" }, "choice": { "$ref": "#/definitions/name" } }
+        }
+      }
+    }
+  },
+  "properties": {
+    "$schema": { "type": "string" },
+    "format": { "const": 1 },
+    "id": { "$ref": "#/definitions/name" },
+    "title": { "type": "string", "maxLength": 64 },
+    "summary": { "type": "string", "maxLength": 1000 },
+    "characters": {
+      "description": "The story's recurring people, so each scene casts them the same way.",
+      "type": "object",
+      "propertyNames": { "$ref": "#/definitions/name" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": { "npc": { "$ref": "#/definitions/npcId" }, "about": { "type": "string", "maxLength": 500 } }
+      }
+    },
+    "beats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scene", "when"],
+        "additionalProperties": false,
+        "properties": {
+          "scene": { "$ref": "#/definitions/name" },
+          "when": { "$ref": "#/definitions/when" },
+          "after": { "type": "array", "items": { "$ref": "#/definitions/needs" } },
+          "once": { "description": "Plays only the first time its checkpoint is met. Default true.", "type": "boolean" },
+          "note": { "type": "string", "maxLength": 500 }
+        }
+      }
+    }
+  }
+}

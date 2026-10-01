@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol>
+    <packet family="Scene" action="Open">
+        <comment>
+            Plays a personal scene for this player, now. The payload is the
+            scene as compact JSON in ASCII: its id, kind, map, time of day,
+            cast (with every actor's ENF id), compiled cues and the audio it
+            uses (see RUNTIME.md). The client plays it and answers with
+            Scene_Accept for each choice, Scene_Use for each map cue, and
+            Scene_Close when it ends.
+        </comment>
+        <field name="payload" type="string"/>
+    </packet>
+
+    <packet family="Scene" action="Close">
+        <comment>
+            Stops the scene this player is watching, if any: they were warped,
+            killed or kicked. The client puts the map back as it is.
+        </comment>
+        <dummy type="byte">0</dummy>
+    </packet>
+
+    <packet family="Scene" action="Remove">
+        <comment>
+            Another player in range has stepped into an instanced scene: they
+            are out of the world until Scene_Agree. The client stops drawing
+            them. (A classic client, which doesn't know this family, gets
+            Avatar_Remove instead.)
+        </comment>
+        <field name="player_id" type="short"/>
+    </packet>
+
+    <packet family="Scene" action="Agree">
+        <comment>
+            A player in range is back from an instanced scene, where it left
+            them: draw them again. The same body as Players_Agree. (A classic
+            client gets Players_Agree.)
+        </comment>
+        <field name="nearby" type="NearbyInfo"/>
+    </packet>
+</protocol>
